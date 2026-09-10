@@ -8,19 +8,15 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
 
 export const metadata: Metadata = {
-  title: 'Tai Dev - Phan Mem & Blog',
-  description: 'Website ca nhan - Chia se phan mem va blog cong nghe',
-  openGraph: {
-    title: 'Tai Dev',
-    description: 'Website ca nhan - Chia se phan mem va blog cong nghe',
-    type: 'website',
-  },
+  title: 'Hữu Tài Genz - Chuyên Gia Khảo Thí & Đo Lường Giáo Dục',
+  description: 'Hữu Tài Genz - 0902155906. Chuyên gia về Khảo thí - đo lường - đánh giá - kì thi chuyên biệt - kiểm tra đầu vào, đầu ra học phần, CTĐT.',
+  keywords: 'Hữu Tài Genz, Khảo thí, Đo lường giáo dục, Đánh giá năng lực, Kì thi chuyên biệt, Chuẩn đầu ra CTĐT, QBank',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} font-sans bg-white text-black antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans bg-white text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white`}>
         <Header />
         <main>{children}</main>
         <Footer />

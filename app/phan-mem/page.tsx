@@ -1,92 +1,98 @@
 ﻿import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
-import type { Software } from '@/lib/supabase'
+import { fetchSoftwareList } from '@/lib/supabase'
 import { formatBytes } from '@/lib/utils'
-
-async function getAllSoftware(): Promise<Software[]> {
-  const { data } = await supabase
-    .from('software')
-    .select('*')
-    .order('created_at', { ascending: false })
-  return data || []
-}
 
 export const revalidate = 60
 
 export default async function SoftwarePage() {
-  const software = await getAllSoftware()
+  const software = await fetchSoftwareList()
 
   return (
-    <div className="min-h-screen pt-24 pb-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <p className="text-sm tracking-widest uppercase text-neutral-400 mb-4">Cong cu</p>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{fontFamily: 'Georgia, serif'}}>Phan Mem</h1>
-          <p className="text-lg text-neutral-500 max-w-xl mx-auto">
-            Tuyen tap cac phan mem duoc phat trien va chia se boi Tai Dev.
-          </p>
-        </div>
+    <div className="min-h-screen pt-32 pb-28 px-6 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="text-center max-w-3xl mx-auto mb-20">
+        <span className="text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3.5 py-1.5 rounded-full border border-amber-200/50">
+          Phần Mềm Khảo Thí &amp; Đo Lường
+        </span>
+        <h1
+          className="text-5xl sm:text-6xl md:text-7xl font-bold mt-6 mb-6 text-neutral-950 tracking-tight"
+          style={{ fontFamily: 'var(--font-playfair), Georgia, serif' }}
+        >
+          Hệ Thống Phần Mềm
+        </h1>
+        <p className="text-lg text-neutral-600 leading-relaxed">
+          Các bộ công cụ và phần mềm chuyên dụng phục vụ công tác xây dựng ngân hàng đề thi, đo lường độ tin cậy, chấm thi tự động và đánh giá chuẩn đầu ra CTĐT của Chuyên gia <strong>Hữu Tài Genz</strong>.
+        </p>
+      </div>
 
-        {software.length === 0 ? (
-          <div className="text-center py-32 text-neutral-400">
-            <p className="text-6xl mb-4">&#128187;</p>
-            <p>Chua co phan mem nao.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {software.map((sw) => (
-              <Link
-                key={sw.id}
-                href={`/phan-mem/${sw.slug}`}
-                className="group block bg-neutral-50 rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
-              >
-                <div className="aspect-[16/10] bg-neutral-200 relative overflow-hidden">
-                  {sw.image_url ? (
-                    <img
-                      src={sw.image_url}
-                      alt={sw.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-8xl">&#128187;</div>
-                  )}
-                  <div className="absolute top-4 right-4">
-                    <span className="bg-black/80 text-white text-xs px-3 py-1.5 rounded-full font-medium backdrop-blur-sm">
-                      v{sw.version}
-                    </span>
+      {/* Grid: 2 columns on desktop = exactly 4 big boxes per screen view */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10">
+        {software.map((sw) => (
+          <div
+            key={sw.id}
+            className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-neutral-200/90 shadow-[0_4px_25px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.09)] transition-all duration-500 hover:-translate-y-2"
+          >
+            {/* Image Banner */}
+            <div className="aspect-[16/9] w-full bg-neutral-100 relative overflow-hidden">
+              {sw.image_url ? (
+                <img
+                  src={sw.image_url}
+                  alt={sw.name}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-6xl">💻</div>
+              )}
+              <div className="absolute top-4 right-4">
+                <span className="bg-black/85 backdrop-blur-md text-white text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-sm">
+                  v{sw.version}
+                </span>
+              </div>
+            </div>
+
+            {/* Content Body */}
+            <div className="p-8 sm:p-10 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 className="font-bold text-2xl sm:text-3xl text-neutral-950 mb-3 group-hover:text-amber-700 transition-colors">
+                  {sw.name}
+                </h2>
+                <p className="text-neutral-600 text-sm leading-relaxed mb-6 line-clamp-3">
+                  {sw.description}
+                </p>
+
+                {/* Features */}
+                {sw.features && sw.features.length > 0 && (
+                  <div className="mb-6 space-y-2 bg-neutral-50/80 p-5 rounded-2xl border border-neutral-100">
+                    <p className="text-[10px] uppercase font-bold tracking-wider text-neutral-400">
+                      Tính năng nổi bật
+                    </p>
+                    {sw.features.slice(0, 3).map((feat, idx) => (
+                      <div key={idx} className="flex items-start gap-2.5 text-xs text-neutral-700">
+                        <span className="text-amber-500 font-bold mt-0.5">✦</span>
+                        <span className="line-clamp-1">{feat}</span>
+                      </div>
+                    ))}
                   </div>
+                )}
+              </div>
+
+              {/* Action and Download Stats */}
+              <div className="pt-6 border-t border-neutral-100 flex items-center justify-between">
+                <div className="text-xs text-neutral-500 flex items-center gap-3 font-medium">
+                  <span>📥 {sw.download_count.toLocaleString()} lượt tải</span>
+                  {sw.file_size > 0 && <span>• {formatBytes(sw.file_size)}</span>}
                 </div>
-
-                <div className="p-8 md:p-10">
-                  <h2 className="font-bold text-2xl md:text-3xl mb-3 group-hover:underline">{sw.name}</h2>
-                  <p className="text-neutral-500 leading-relaxed mb-6 line-clamp-3">{sw.description}</p>
-
-                  {sw.features && sw.features.length > 0 && (
-                    <div className="mb-6">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-3">Tinh nang noi bat</p>
-                      <ul className="space-y-1.5">
-                        {sw.features.slice(0, 3).map((f: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-neutral-600">
-                            <span className="text-black mt-0.5">&#9830;</span>
-                            {f}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-6 border-t border-neutral-200">
-                    <div className="flex items-center gap-4 text-xs text-neutral-400">
-                      <span>&#11015; {(sw.download_count || 0).toLocaleString()} luot tai</span>
-                      {sw.file_size > 0 && <span>{formatBytes(sw.file_size)}</span>}
-                    </div>
-                    <span className="text-sm font-medium text-black">Xem chi tiet &rarr;</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                <Link
+                  href={`/phan-mem/${sw.slug}`}
+                  className="inline-flex items-center gap-2 text-xs font-bold text-black bg-neutral-100 group-hover:bg-black group-hover:text-white px-5 py-2.5 rounded-xl transition-all"
+                >
+                  <span>Chi Tiết &amp; Tải Về</span>
+                  <span>&rarr;</span>
+                </Link>
+              </div>
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   )
