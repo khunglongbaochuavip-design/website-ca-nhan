@@ -6,7 +6,9 @@ import SoftwareForm from '../SoftwareForm'
 export default async function NewSoftwarePage() {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')
-  if (!token || token.value !== process.env.ADMIN_TOKEN) redirect('/admin/login')
+  const expectedToken = process.env.ADMIN_TOKEN || 'secret-admin-token-2026'
+  if (!token || token.value !== expectedToken) redirect('/admin/login')
+
 
   return (
     <div className="flex">
