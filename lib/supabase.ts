@@ -1,4 +1,4 @@
-﻿import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 import { INITIAL_SOFTWARE, INITIAL_BLOGS } from './mockData'
 
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -64,6 +64,20 @@ export async function fetchSoftwareBySlug(slug: string): Promise<Software | unde
   }
 }
 
+export async function fetchSoftwareById(id: string): Promise<Software | undefined> {
+  if (isConfigured) {
+    try {
+      const timeoutPromise = new Promise<{ data: null }>((resolve) => setTimeout(() => resolve({ data: null }), 1000))
+      const fetchPromise = supabase.from('software').select('*').eq('id', id).single()
+      const { data } = await Promise.race([fetchPromise, timeoutPromise])
+      if (data) return data as Software
+    } catch {
+      // fallback
+    }
+  }
+  return INITIAL_SOFTWARE.find(s => s.id === id || s.slug === id)
+}
+
 export async function fetchBlogList(): Promise<BlogPost[]> {
   if (!isConfigured) return INITIAL_BLOGS
   try {
@@ -88,4 +102,18 @@ export async function fetchBlogBySlug(slug: string): Promise<BlogPost | undefine
   } catch {
     return INITIAL_BLOGS.find(b => b.slug === slug)
   }
+}
+
+export async function fetchBlogById(id: string): Promise<BlogPost | undefined> {
+  if (isConfigured) {
+    try {
+      const timeoutPromise = new Promise<{ data: null }>((resolve) => setTimeout(() => resolve({ data: null }), 1000))
+      const fetchPromise = supabase.from('blog_posts').select('*').eq('id', id).single()
+      const { data } = await Promise.race([fetchPromise, timeoutPromise])
+      if (data) return data as BlogPost
+    } catch {
+      // fallback
+    }
+  }
+  return INITIAL_BLOGS.find(b => b.id === id || b.slug === id)
 }

@@ -109,10 +109,20 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
     const body = { ...form, features: form.features.filter(Boolean) }
     const url = isEdit && software ? '/api/software/' + software.id : '/api/software'
     const method = isEdit ? 'PUT' : 'POST'
-    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-    if (res.ok) router.push('/admin/phan-mem')
-    else alert('Loi luu du lieu')
-    setLoading(false)
+    try {
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      if (res.ok) {
+        alert('Luu phan mem thanh cong!')
+        router.push('/admin/phan-mem')
+        router.refresh()
+      } else {
+        alert('Loi luu du lieu')
+      }
+    } catch {
+      alert('Loi ket noi')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -154,11 +164,17 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
             </button>
           </div>
         )}
-        <label className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-black transition-colors">
+        <label className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-black transition-colors mb-3">
           <span className="text-3xl">&#128444;</span>
-          <span className="text-sm text-neutral-500">Chon anh (JPG, PNG, WEBP)</span>
+          <span className="text-sm text-neutral-500">Chon anh tu may tinh (JPG, PNG, WEBP)</span>
           <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         </label>
+        <div>
+          <label className="block text-xs font-medium text-neutral-500 mb-1">Hoac dan link anh truc tiep (URL):</label>
+          <input type="text" value={form.image_url} onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))}
+            placeholder="https://... (link anh)"
+            className="w-full px-4 py-2 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-black" />
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl p-6 border border-neutral-200">
@@ -183,12 +199,19 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
           </div>
         )}
         {uploadProgress === 100 && <p className="text-green-600 text-sm mb-4">&#10003; Upload thanh cong!</p>}
-        <label className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-black transition-colors">
+        <label className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-black transition-colors mb-3">
           <span className="text-3xl">&#128228;</span>
-          <span className="text-sm text-neutral-500">Chon file .ZIP hoac .RAR (toi da 500MB+)</span>
+          <span className="text-sm text-neutral-500">Chon file .ZIP hoac .RAR tu may tinh (toi da 500MB+)</span>
           <input type="file" accept=".zip,.rar,.7z,.exe,.msi" onChange={handleFileUpload} className="hidden" />
         </label>
+        <div>
+          <label className="block text-xs font-medium text-neutral-500 mb-1">Hoac dan link tai ve truc tiep (Google Drive, GitHub, Mediafire...):</label>
+          <input type="text" value={form.file_url} onChange={(e) => setForm((f) => ({ ...f, file_url: e.target.value, file_name: f.file_name || 'Link tai phan mem' }))}
+            placeholder="https://drive.google.com/... hoac link tai file"
+            className="w-full px-4 py-2 border border-neutral-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-black" />
+        </div>
       </div>
+
 
       <div className="bg-white rounded-2xl p-6 border border-neutral-200">
         <div className="flex items-center justify-between mb-4">

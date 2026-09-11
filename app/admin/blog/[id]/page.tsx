@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { fetchBlogById } from '@/lib/supabase'
 import AdminSidebar from '../../AdminSidebar'
 import BlogEditor from '../BlogEditor'
 
@@ -10,10 +10,10 @@ export default async function EditBlogPage({ params }: { params: Promise<{ id: s
   const expectedToken = process.env.ADMIN_TOKEN || 'secret-admin-token-2026'
   if (!token || token.value !== expectedToken) redirect('/admin/login')
 
-
   const { id } = await params
-  const { data: post } = await supabase.from('blog_posts').select('*').eq('id', id).single()
+  const post = await fetchBlogById(id)
   if (!post) redirect('/admin/blog')
+
 
   return (
     <div className="flex">

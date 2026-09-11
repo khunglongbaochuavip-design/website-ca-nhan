@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { fetchSoftwareById } from '@/lib/supabase'
 import AdminSidebar from '../../AdminSidebar'
 import SoftwareForm from '../SoftwareForm'
 
@@ -12,8 +12,9 @@ export default async function EditSoftwarePage({ params }: { params: Promise<{ i
 
 
   const { id } = await params
-  const { data: software } = await supabase.from('software').select('*').eq('id', id).single()
+  const software = await fetchSoftwareById(id)
   if (!software) redirect('/admin/phan-mem')
+
 
   return (
     <div className="flex">
