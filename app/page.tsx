@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { fetchSoftwareList, fetchBlogList } from '@/lib/supabase'
-import { formatDate, formatBytes } from '@/lib/utils'
+import { formatDate, formatBytes, cleanSlug } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -164,7 +164,7 @@ export default async function HomePage() {
                     {sw.file_size > 0 && <span>• {formatBytes(sw.file_size)}</span>}
                   </div>
                   <Link
-                    href={`/phan-mem/${sw.slug}`}
+                    href={`/phan-mem/${cleanSlug(sw.slug)}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-black group-hover:text-amber-700 transition-colors bg-neutral-100 hover:bg-black hover:text-white px-4 py-2 rounded-xl"
                   >
                     <span>Chi Tiết &amp; Tải</span>
@@ -205,7 +205,7 @@ export default async function HomePage() {
             {topBlogs.map((post) => (
               <Link
                 key={post.id}
-                href={`/blog/${post.slug}`}
+                href={`/blog/${cleanSlug(post.slug)}`}
                 className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-neutral-200/70 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="aspect-[16/10] bg-neutral-100 overflow-hidden">

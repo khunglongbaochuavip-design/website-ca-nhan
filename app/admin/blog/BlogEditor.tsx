@@ -8,6 +8,7 @@ import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import type { BlogPost } from '@/lib/supabase'
+import { cleanSlug } from '@/lib/utils'
 
 interface ToolbarButtonProps {
   onClick: () => void
@@ -50,7 +51,7 @@ interface BlogEditorProps {
 export default function BlogEditor({ post, isEdit }: BlogEditorProps = {}) {
   const router = useRouter()
   const [title, setTitle] = useState(post?.title || '')
-  const [slug, setSlug] = useState(post?.slug || '')
+  const [slug, setSlug] = useState(cleanSlug(post?.slug || post?.title || ''))
   const [coverImage, setCoverImage] = useState(post?.cover_image || '')
   const [published, setPublished] = useState(post?.published || false)
   const [loading, setLoading] = useState(false)
@@ -78,7 +79,7 @@ export default function BlogEditor({ post, isEdit }: BlogEditorProps = {}) {
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const t = e.target.value
     setTitle(t)
-    if (!isEdit) setSlug(slugify(t))
+    if (!isEdit) setSlug(cleanSlug(t))
   }
 
   async function handleCoverUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -126,7 +127,7 @@ export default function BlogEditor({ post, isEdit }: BlogEditorProps = {}) {
 
     const body = {
       title,
-      slug,
+      slug: cleanSlug(slug || title) || post?.id || Date.now().toString(),
       content: editor?.getHTML() || '',
       cover_image: coverImage,
       published,
@@ -201,9 +202,12 @@ export default function BlogEditor({ post, isEdit }: BlogEditorProps = {}) {
           <input
             type="text"
             value={slug}
-            onChange={(e) => setSlug(e.target.value)}
+            onChange={(e) => setSlug(cleanSlug(e.target.value))}
             className="w-full px-4 py-2.5 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-neutral-900 text-sm font-mono"
           />
+          <p className="text-[11px] text-neutral-500 mt-1 font-mono truncate">
+            🌐 Xem thử: /blog/<span className="font-bold text-neutral-800">{cleanSlug(slug || title) || 'tieu-de-bai-viet'}</span>
+          </p>
         </div>
 
         <div className="bg-white rounded-3xl p-6 border border-neutral-200 shadow-sm flex items-center justify-between">

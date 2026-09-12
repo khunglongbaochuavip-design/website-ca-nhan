@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { fetchSoftwareList } from '@/lib/supabase'
-import { formatBytes } from '@/lib/utils'
+import { formatBytes, cleanSlug } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -84,7 +84,7 @@ export default async function SoftwarePage() {
                   {sw.file_size > 0 && <span>• {formatBytes(sw.file_size)}</span>}
                 </div>
                 <Link
-                  href={`/phan-mem/${sw.slug}`}
+                  href={`/phan-mem/${cleanSlug(sw.slug)}`}
                   className="inline-flex items-center gap-2 text-xs font-bold text-black bg-neutral-100 group-hover:bg-black group-hover:text-white px-5 py-2.5 rounded-xl transition-all"
                 >
                   <span>Chi Tiết &amp; Tải Về</span>

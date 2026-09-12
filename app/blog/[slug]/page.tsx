@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { fetchBlogBySlug } from '@/lib/supabase'
-import { formatDate } from '@/lib/utils'
+import { formatDate, cleanSlug } from '@/lib/utils'
 import Link from 'next/link'
 
 interface Props {
@@ -12,7 +12,7 @@ export const revalidate = 0
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
-  const post = await fetchBlogBySlug(slug)
+  const post = await fetchBlogBySlug(cleanSlug(slug))
   if (!post) return { title: 'Không tìm thấy bài viết' }
   return {
     title: `${post.title} - Hữu Tài Genz`,
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function BlogDetailPage({ params }: Props) {
   const { slug } = await params
-  const post = await fetchBlogBySlug(slug)
+  const post = await fetchBlogBySlug(cleanSlug(slug))
   if (!post) notFound()
 
   return (

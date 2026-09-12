@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { fetchBlogList } from '@/lib/supabase'
-import { formatDate } from '@/lib/utils'
+import { formatDate, cleanSlug } from '@/lib/utils'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -31,7 +31,7 @@ export default async function BlogPage() {
         {blogs.map((post) => (
           <Link
             key={post.id}
-            href={`/blog/${post.slug}`}
+            href={`/blog/${cleanSlug(post.slug)}`}
             className="group flex flex-col md:flex-row gap-8 p-6 sm:p-8 bg-white rounded-3xl border border-neutral-200/80 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             {/* Cover Image */}

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { fetchSoftwareBySlug } from '@/lib/supabase'
-import { formatBytes, formatDate } from '@/lib/utils'
+import { formatBytes, formatDate, cleanSlug } from '@/lib/utils'
 import DownloadButton from './DownloadButton'
 import Link from 'next/link'
 
@@ -13,7 +13,7 @@ export const revalidate = 0
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params
-  const sw = await fetchSoftwareBySlug(slug)
+  const sw = await fetchSoftwareBySlug(cleanSlug(slug))
   if (!sw) return { title: 'Không tìm thấy phần mềm' }
   return {
     title: `${sw.name} - Hữu Tài Genz`,
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function SoftwareDetailPage({ params }: Props) {
   const { slug } = await params
-  const sw = await fetchSoftwareBySlug(slug)
+  const sw = await fetchSoftwareBySlug(cleanSlug(slug))
   if (!sw) notFound()
 
   return (

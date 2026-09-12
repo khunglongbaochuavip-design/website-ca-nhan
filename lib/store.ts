@@ -83,6 +83,8 @@ export async function saveCMSData(data: CMSData): Promise<void> {
   }
 }
 
+import { cleanSlug } from './utils'
+
 // ─── Software Operations ───────────────────────────────────────────────────
 
 export async function storeSoftwareList(): Promise<Software[]> {
@@ -92,16 +94,19 @@ export async function storeSoftwareList(): Promise<Software[]> {
 
 export async function storeSoftwareById(id: string): Promise<Software | undefined> {
   const data = await loadCMSData()
-  return data.software.find((s) => s.id === id || s.slug === id)
+  const target = cleanSlug(id)
+  return data.software.find((s) => s.id === id || cleanSlug(s.slug) === target)
 }
 
 export async function storeSoftwareBySlug(slug: string): Promise<Software | undefined> {
   const data = await loadCMSData()
-  return data.software.find((s) => s.slug === slug)
+  const target = cleanSlug(slug)
+  return data.software.find((s) => cleanSlug(s.slug) === target || s.id === slug)
 }
 
 export async function storeSaveSoftware(item: Software): Promise<Software> {
   const data = await loadCMSData()
+  item.slug = cleanSlug(item.slug || item.name) || item.id
   const idx = data.software.findIndex((s) => s.id === item.id)
   if (idx >= 0) {
     data.software[idx] = item
@@ -129,16 +134,19 @@ export async function storeBlogList(publishedOnly = false): Promise<BlogPost[]> 
 
 export async function storeBlogById(id: string): Promise<BlogPost | undefined> {
   const data = await loadCMSData()
-  return data.blogs.find((b) => b.id === id || b.slug === id)
+  const target = cleanSlug(id)
+  return data.blogs.find((b) => b.id === id || cleanSlug(b.slug) === target)
 }
 
 export async function storeBlogBySlug(slug: string): Promise<BlogPost | undefined> {
   const data = await loadCMSData()
-  return data.blogs.find((b) => b.slug === slug)
+  const target = cleanSlug(slug)
+  return data.blogs.find((b) => cleanSlug(b.slug) === target || b.id === slug)
 }
 
 export async function storeSaveBlog(item: BlogPost): Promise<BlogPost> {
   const data = await loadCMSData()
+  item.slug = cleanSlug(item.slug || item.title) || item.id
   const idx = data.blogs.findIndex((b) => b.id === item.id)
   if (idx >= 0) {
     data.blogs[idx] = item

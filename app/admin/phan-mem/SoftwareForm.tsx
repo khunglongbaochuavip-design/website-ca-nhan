@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Software } from '@/lib/supabase'
+import { cleanSlug } from '@/lib/utils'
 
 interface SoftwareFormProps {
   software?: Software
@@ -17,7 +18,7 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
 
   const [form, setForm] = useState({
     name: software?.name || '',
-    slug: software?.slug || '',
+    slug: cleanSlug(software?.slug || software?.name || ''),
     description: software?.description || '',
     content: software?.content || '',
     version: software?.version || '1.0.0',
@@ -27,19 +28,9 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
     file_name: software?.file_name || '',
   })
 
-  function slugify(t: string) {
-    return t
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9 ]/g, '')
-      .trim()
-      .replace(/\s+/g, '-')
-  }
-
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.value
-    setForm((f) => ({ ...f, name, slug: isEdit ? f.slug : slugify(name) }))
+    setForm((f) => ({ ...f, name, slug: isEdit ? f.slug : cleanSlug(name) }))
   }
 
   function addFeature() {
@@ -93,6 +84,7 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
 
     const body = {
       ...form,
+      slug: cleanSlug(form.slug || form.name) || software?.id || Date.now().toString(),
       features: form.features.filter((f) => f.trim().length > 0),
       file_name: form.file_name || (form.file_url ? 'Bộ cài đặt phần mềm' : ''),
       file_size: 0,
@@ -172,10 +164,13 @@ export default function SoftwareForm({ software, isEdit }: SoftwareFormProps) {
             <input
               type="text"
               value={form.slug}
-              onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+              onChange={(e) => setForm((f) => ({ ...f, slug: cleanSlug(e.target.value) }))}
               placeholder="qbank-studio-pro-2026"
               className="w-full px-4 py-3 border border-neutral-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-neutral-950 text-sm font-mono"
             />
+            <p className="text-[11px] text-neutral-500 mt-1 font-mono truncate">
+              🌐 Xem thử: /phan-mem/<span className="font-bold text-neutral-800">{cleanSlug(form.slug || form.name) || 'ten-phan-mem'}</span>
+            </p>
           </div>
 
           <div>
