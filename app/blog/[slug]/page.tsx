@@ -1,4 +1,4 @@
-﻿import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { fetchBlogBySlug } from '@/lib/supabase'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
@@ -7,7 +7,8 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params

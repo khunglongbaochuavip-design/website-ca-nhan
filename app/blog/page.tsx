@@ -1,8 +1,9 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { fetchBlogList } from '@/lib/supabase'
 import { formatDate } from '@/lib/utils'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function BlogPage() {
   const blogs = await fetchBlogList()

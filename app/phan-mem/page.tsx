@@ -1,8 +1,9 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { fetchSoftwareList } from '@/lib/supabase'
 import { formatBytes } from '@/lib/utils'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function SoftwarePage() {
   const software = await fetchSoftwareList()

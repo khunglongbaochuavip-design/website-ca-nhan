@@ -7,17 +7,20 @@ export default function DeleteBlogButton({ id, title }: { id: string; title: str
   const router = useRouter()
 
   async function handleDelete() {
-    if (!confirm('Xoa bai viet "' + title + '"?')) return
+    if (!confirm('Xóa bài viết "' + title + '"?')) return
     setLoading(true)
-    await fetch('/api/blog/' + id, { method: 'DELETE' })
+    const res = await fetch('/api/blog/' + id, { method: 'DELETE' })
+    if (!res.ok) {
+      alert('Lỗi xóa bài viết')
+    }
     router.refresh()
     setLoading(false)
   }
 
   return (
     <button onClick={handleDelete} disabled={loading}
-      className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg text-sm hover:bg-red-100 transition-colors disabled:opacity-60 cursor-pointer">
-      {loading ? '...' : 'Xoa'}
+      className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-xl text-xs font-semibold hover:bg-red-100 transition-colors disabled:opacity-60 cursor-pointer">
+      {loading ? '...' : 'Xóa'}
     </button>
   )
 }

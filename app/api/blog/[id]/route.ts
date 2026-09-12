@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 import { cookies } from 'next/headers'
+import { storeBlogById, storeSaveBlog, storeDeleteBlog } from '@/lib/store'
+import type { BlogPost } from '@/lib/supabase'
 
 async function isAdmin() {
   const cookieStore = await cookies()
@@ -9,29 +10,37 @@ async function isAdmin() {
   return token?.value === expected
 }
 
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const item = await storeBlogById(id)
+  if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  return NextResponse.json(item)
+}
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!await isAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
   const body = await req.json()
-  try {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .upsert({ ...body, id, updated_at: new Date().toISOString() })
-      .select()
-      .single()
-    if (!error && data) return NextResponse.json(data)
-  } catch (e) {
-    console.error('Blog save error:', e)
-  }
-  return NextResponse.json({ success: true, ...body, id })
-}
 
+  const existing = await storeBlogById(id)
+  const updated: BlogPost = {
+    id,
+    title: body.title ?? existing?.title ?? '',
+    slug: body.slug ?? existing?.slug ?? '',
+    content: body.content ?? existing?.content ?? '',
+    cover_image: body.cover_image ?? existing?.cover_image ?? '',
+    published: body.published ?? existing?.published ?? false,
+    created_at: existing?.created_at ?? new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }
+
+  await storeSaveBlog(updated)
+  return NextResponse.json(updated)
+}
 
 export async function DELETE(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   if (!await isAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const { id } = await params
-  const { error } = await supabase.from('blog_posts').delete().eq('id', id)
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  await storeDeleteBlog(id)
   return NextResponse.json({ success: true })
 }

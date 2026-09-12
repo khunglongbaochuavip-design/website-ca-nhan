@@ -1,8 +1,9 @@
-﻿import Link from 'next/link'
+import Link from 'next/link'
 import { fetchSoftwareList, fetchBlogList } from '@/lib/supabase'
 import { formatDate, formatBytes } from '@/lib/utils'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function HomePage() {
   const [softwareList, blogList] = await Promise.all([
@@ -16,9 +17,9 @@ export default async function HomePage() {
   return (
     <div className="overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-[92vh] flex flex-col items-center justify-center text-center px-6 pt-24 pb-16 bg-gradient-to-b from-neutral-50 via-white to-white">
+      <section className="relative min-h-[88vh] flex flex-col items-center justify-center text-center px-6 pt-28 pb-16">
         {/* Subtle Ambient Background */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-amber-100/40 via-neutral-100 to-sky-100/40 blur-3xl -z-10 rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-amber-200/30 via-transparent to-sky-200/30 blur-3xl -z-10 rounded-full pointer-events-none" />
 
         <div className="max-w-5xl mx-auto flex flex-col items-center">
           {/* Badge */}

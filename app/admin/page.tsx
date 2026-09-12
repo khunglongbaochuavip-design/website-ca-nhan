@@ -1,7 +1,10 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { supabase, fetchSoftwareList, fetchBlogList } from '@/lib/supabase'
+import { fetchSoftwareList, fetchAllBlogList } from '@/lib/supabase'
 import AdminSidebar from './AdminSidebar'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function AdminDashboard() {
   const cookieStore = await cookies()
@@ -12,7 +15,7 @@ export default async function AdminDashboard() {
 
   const [software, blogs] = await Promise.all([
     fetchSoftwareList(),
-    fetchBlogList(),
+    fetchAllBlogList(),
   ])
 
   const swCount = software.length

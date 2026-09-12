@@ -1,10 +1,13 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { fetchBlogList } from '@/lib/supabase'
+import { fetchAllBlogList } from '@/lib/supabase'
 import Link from 'next/link'
 import AdminSidebar from '../AdminSidebar'
 import { formatDate } from '@/lib/utils'
 import DeleteBlogButton from './DeleteBlogButton'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function AdminBlogPage() {
   const cookieStore = await cookies()
@@ -13,7 +16,7 @@ export default async function AdminBlogPage() {
   if (!token || token.value !== expectedToken) redirect('/admin/login')
 
 
-  const posts = await fetchBlogList()
+  const posts = await fetchAllBlogList()
 
   return (
     <div className="flex min-h-screen bg-neutral-50">

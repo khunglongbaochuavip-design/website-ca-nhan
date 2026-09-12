@@ -6,6 +6,9 @@ import AdminSidebar from '../AdminSidebar'
 import { formatBytes, formatDate } from '@/lib/utils'
 import DeleteSoftwareButton from './DeleteSoftwareButton'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function AdminSoftwarePage() {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')

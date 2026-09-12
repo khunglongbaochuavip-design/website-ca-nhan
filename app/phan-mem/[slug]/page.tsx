@@ -1,4 +1,4 @@
-﻿import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { fetchSoftwareBySlug } from '@/lib/supabase'
 import { formatBytes, formatDate } from '@/lib/utils'
 import DownloadButton from './DownloadButton'
@@ -8,7 +8,8 @@ interface Props {
   params: Promise<{ slug: string }>
 }
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params

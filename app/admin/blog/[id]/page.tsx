@@ -4,6 +4,9 @@ import { fetchBlogById } from '@/lib/supabase'
 import AdminSidebar from '../../AdminSidebar'
 import BlogEditor from '../BlogEditor'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   const cookieStore = await cookies()
   const token = cookieStore.get('admin_token')
@@ -19,7 +22,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ id: s
     <div className="flex">
       <AdminSidebar />
       <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-8" style={{fontFamily:'Georgia,serif'}}>Sua Bai Viet</h1>
+        <h1 className="text-3xl font-bold mb-8" style={{fontFamily:'Georgia,serif'}}>Sửa Bài Viết</h1>
         <BlogEditor post={post} isEdit />
       </main>
     </div>

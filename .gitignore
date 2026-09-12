@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+
+# CMS local data
+.cms_data.json
 /.pnp
 .pnp.*
 .yarn/*

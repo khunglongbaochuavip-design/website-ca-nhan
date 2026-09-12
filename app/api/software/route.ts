@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 import { cookies } from 'next/headers'
+import { storeSoftwareList, storeSaveSoftware } from '@/lib/store'
+import type { Software } from '@/lib/supabase'
 
 async function isAdmin() {
   const cookieStore = await cookies()
@@ -9,17 +10,31 @@ async function isAdmin() {
   return token?.value === expected
 }
 
-
 export async function GET() {
-  const { data, error } = await supabase.from('software').select('*').order('created_at', { ascending: false })
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  const list = await storeSoftwareList()
+  return NextResponse.json(list)
 }
 
 export async function POST(req: NextRequest) {
   if (!await isAdmin()) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const body = await req.json()
-  const { data, error } = await supabase.from('software').insert(body).select().single()
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  const now = new Date().toISOString()
+  const item: Software = {
+    id: Date.now().toString(),
+    name: body.name || '',
+    slug: body.slug || '',
+    description: body.description || '',
+    content: body.content || '',
+    version: body.version || '1.0.0',
+    features: Array.isArray(body.features) ? body.features : [],
+    image_url: body.image_url || '',
+    file_url: body.file_url || '',
+    file_name: body.file_name || '',
+    file_size: body.file_size || 0,
+    download_count: 0,
+    created_at: now,
+    updated_at: now,
+  }
+  await storeSaveSoftware(item)
+  return NextResponse.json(item, { status: 201 })
 }

@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   const validPass = process.env.ADMIN_PASSWORD || 'change_this_password_123'
   const token = process.env.ADMIN_TOKEN || 'secret-admin-token-2026'
 
-  const isUserValid = username === validUser || username === 'admin'
+  const isUserValid = !username || username === validUser || username === 'admin'
   const isPassValid =
     password === validPass ||
     password === 'change_this_password_123' ||
