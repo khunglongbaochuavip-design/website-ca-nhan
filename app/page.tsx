@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { fetchSoftwareList, fetchBlogList } from '@/lib/supabase'
 import { formatDate, formatBytes, cleanSlug } from '@/lib/utils'
-import DinoGame from '@/components/dino-exam/DinoGame'
+import GameHub from '@/components/game-hub/GameHub'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -84,9 +84,9 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Dino Exam Runner Interactive Game */}
+            {/* Right Column: Game Khảo Thí Interactive Arcade Hub */}
             <div className="lg:col-span-7 w-full flex flex-col items-center">
-              <DinoGame />
+              <GameHub />
             </div>
           </div>
         </div>

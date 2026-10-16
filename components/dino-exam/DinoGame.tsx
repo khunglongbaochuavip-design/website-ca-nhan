@@ -11,7 +11,7 @@ import GameOverModal from './GameOverModal';
 import VictoryModal from './VictoryModal';
 import CustomizerModal from './CustomizerModal';
 
-export default function DinoGame() {
+export default function DinoGame({ onBackToHub }: { onBackToHub?: () => void } = {}) {
   // Game states
   const [gameState, setGameState] = useState<GameStateV2>('READY');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -225,6 +225,26 @@ export default function DinoGame() {
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-3 border-b border-neutral-800/80">
         {/* Title & Brand */}
         <div className="flex items-center gap-2.5">
+          {onBackToHub && (
+            <button
+              type="button"
+              onClick={() => {
+                if (gameState !== 'READY' && gameState !== 'GAME_OVER' && gameState !== 'VICTORY') {
+                  const leave = window.confirm(
+                    'Bạn có chắc muốn trở về Game Khảo thí? Lượt chơi hiện tại sẽ kết thúc.'
+                  );
+                  if (!leave) return;
+                }
+                clearTimers();
+                soundManager.stopBgm();
+                onBackToHub();
+              }}
+              className="px-2.5 py-1.5 rounded-xl bg-neutral-900 border border-neutral-700 hover:border-amber-400 text-neutral-300 hover:text-white text-xs font-mono transition-colors flex items-center gap-1 cursor-pointer mr-1"
+            >
+              <span>←</span>
+              <span>Game Khảo thí</span>
+            </button>
+          )}
           <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-sm" />
           <h2 className="text-base sm:text-lg font-black tracking-wider uppercase font-mono text-white flex items-center gap-2">
             <span>DINO EXAM RUNNER</span>
