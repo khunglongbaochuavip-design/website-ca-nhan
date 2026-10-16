@@ -36,7 +36,7 @@
 
 ---
 
-## 3. Kết Quả Kiểm Thử Trước Triển Khai (Pre-Deployment Audit)
+## 3. Kết Quả Kiểm Thử & Xác Minh Triển Khai (Production Verification)
 1. **TypeScript Type Check:**
    - Lệnh: `npx tsc --noEmit`
    - Kết quả: **PASS** (0 errors).
@@ -46,9 +46,22 @@
 3. **Question Bank Verification:**
    - Kịch bản kiểm thử: `tests/dino-exam/verify-questions.mjs`
    - Kết quả: **PASS 40/40 câu hỏi (100%)** — đúng từng từ ngữ, mapping `JUMP = TRUE`, `RUN = FALSE`, giải thích và độ khó.
-4. **End-to-End Automated Browser Smoke Test:**
-   - Kịch bản kiểm thử: `tests/dino-exam/test-v21.mjs`
-   - Kết quả: **PASS** — Kiểm thử thành công nút Fullscreen, banner câu hỏi nhận định, cụm cổng ĐÚNG/SAI, hành vi nhảy vượt cổng và hiển thị modal GameOver/Victory.
+4. **Vercel Production Deployment:**
+   - Deployment ID: `dpl_6k5U8R8Zh8mBcHEdY5hh2r2qguhg`
+   - Target URL: `https://huutaigenz.vercel.app/`
+   - Trạng thái Vercel: **READY (HTTP 200 OK)**
+5. **Production Smoke Test (Trực tiếp trên Live Web):**
+   - Kịch bản kiểm thử: `tests/dino-exam/production-smoke-test.mjs`
+   - Kết quả: **PASS 100%**
+     - Game container, Canvas, Version Badge `v2.1` hiển thị chính xác tại Hero Section.
+     - Nút Fullscreen `⛶ Toàn màn hình` hoạt động tốt.
+     - HUD hiển thị đầy đủ: Tên khủng long, Câu `1/40`, Điểm số `0/100`.
+     - InGameQuestionBanner hiển thị nhận định, domain `CTT`, thanh đếm ngược 7s.
+     - Phím Space kích hoạt cú nhảy vượt chướng ngại vật mượt mà.
+   - Minh chứng ảnh chụp trực tiếp từ Production:
+     - `docs/dino-exam/screenshots/prod_v21_ready.png`
+     - `docs/dino-exam/screenshots/prod_v21_playing.png`
+     - `docs/dino-exam/screenshots/prod_v21_jump.png`
 
 ---
 
